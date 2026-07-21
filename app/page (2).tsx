@@ -10,8 +10,6 @@ import { categories, formatRupiah } from '@/lib/utils';
 import BottomNav from '@/components/BottomNav';
 import { useToast } from '@/components/Toast';
 import { WalletIcon, PiggyBankIcon, ChartPieIcon, PlusIcon, XIcon } from '@/components/Icons';
-import Button from '@/components/Button';
-import { useRipple } from '@/lib/useRipple';
 import Link from 'next/link';
 
 ChartJS.register(ArcElement, Tooltip);
@@ -20,7 +18,6 @@ export default function DashboardPage() {
   const { user, profile, loading } = useAuth();
   const router = useRouter();
   const { showToast } = useToast();
-  const fabRipple = useRipple<HTMLButtonElement>();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [txName, setTxName] = useState('');
@@ -225,23 +222,19 @@ export default function DashboardPage() {
         )}
       </div>
 
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] pointer-events-none z-40">
-        <button
-          ref={fabRipple.ref}
-          onMouseDown={fabRipple.onPointerDown}
-          onClick={() => setShowAddModal(true)}
-          className="fab-pop-in relative overflow-hidden pointer-events-auto absolute bottom-[90px] right-5 w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-dark text-white flex items-center justify-center shadow-[0_8px_24px_rgba(37,99,235,0.45)] dark:shadow-[0_8px_28px_rgba(59,130,246,0.55)] transition-transform duration-200 active:scale-90 hover:scale-105"
-        >
-          <PlusIcon size={26} />
-        </button>
-      </div>
+      <button
+        onClick={() => setShowAddModal(true)}
+        className="md-btn md-ripple fixed bottom-[90px] right-5 md:right-[calc(50%-210px)] w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-dark text-white flex items-center justify-center shadow-lg z-40"
+      >
+        <PlusIcon size={26} />
+      </button>
 
       {showAddModal && (
         <div
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-end justify-center"
           onClick={(e) => e.target === e.currentTarget && setShowAddModal(false)}
         >
-          <div className="bg-white dark:bg-slate-800 rounded-t-3xl w-full max-w-[480px] max-h-[85vh] overflow-y-auto p-6" style={{ animation: 'slideUp .45s cubic-bezier(.22,1,.36,1)' }}>
+          <div className="bg-white dark:bg-slate-800 rounded-t-3xl w-full max-w-[480px] max-h-[85vh] overflow-y-auto p-6" style={{ animation: 'slideUp .4s cubic-bezier(.22,1,.36,1)' }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-lg font-bold text-slate-900 dark:text-white">Catat Pengeluaran</h3>
               <button onClick={() => setShowAddModal(false)} className="md-btn text-slate-400 dark:text-slate-500">
@@ -268,9 +261,10 @@ export default function DashboardPage() {
                   ))}
                 </select>
               </div>
-              <Button type="submit" variant="filled" fullWidth loading={saving}>
+              <button disabled={saving} className="md-btn md-ripple w-full py-3.5 rounded-xl bg-gradient-to-br from-primary to-primary-dark text-white text-[15px] font-semibold disabled:opacity-70">
+                {saving ? <span className="spinner mr-2" /> : null}
                 Sip, Catet!
-              </Button>
+              </button>
             </form>
           </div>
         </div>

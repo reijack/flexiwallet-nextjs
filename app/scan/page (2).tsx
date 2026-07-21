@@ -8,7 +8,6 @@ import { categories, formatRupiah, guessCategory } from '@/lib/utils';
 import BottomNav from '@/components/BottomNav';
 import { useToast } from '@/components/Toast';
 import { CameraIcon, UploadIcon, CheckCircleIcon, XIcon } from '@/components/Icons';
-import Button from '@/components/Button';
 
 type OcrResult = {
   rawText: string;
@@ -230,9 +229,10 @@ export default function ScanPage() {
                 </pre>
               </details>
 
-              <Button type="submit" variant="filled" fullWidth loading={saving}>
+              <button disabled={saving} className="md-btn md-ripple w-full py-3 rounded-xl bg-gradient-to-br from-primary to-primary-dark text-white text-sm font-semibold disabled:opacity-70">
+                {saving ? <span className="spinner mr-2" /> : null}
                 Catat sebagai pengeluaran
-              </Button>
+              </button>
             </form>
           )}
         </div>

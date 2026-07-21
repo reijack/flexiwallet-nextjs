@@ -19,7 +19,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const colors: Record<Toast['type'], string> = {
     success: 'bg-green-600',
     error: 'bg-red-500',
-    info: 'bg-primary',
+    info: 'bg-primary dark:bg-blue-600',
   };
 
   return (
@@ -29,18 +29,13 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         {toasts.map((t) => (
           <div
             key={t.id}
-            className={`${colors[t.type]} text-white text-[13px] font-medium px-4 py-3.5 rounded-2xl shadow-lg animate-[toastIn_.45s_cubic-bezier(.22,1,.36,1)]`}
+            className={`${colors[t.type]} text-white text-[13px] font-medium px-4 py-3.5 rounded-2xl md-elevated`}
+            style={{ animation: 'toastIn .45s cubic-bezier(.22,1,.36,1)' }}
           >
             {t.message}
           </div>
         ))}
       </div>
-      <style jsx global>{`
-        @keyframes toastIn {
-          from { transform: translateY(-24px) scale(.96); opacity: 0; }
-          to { transform: translateY(0) scale(1); opacity: 1; }
-        }
-      `}</style>
     </ToastContext.Provider>
   );
 }

@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { WalletIcon } from '@/components/Icons';
-import Button from '@/components/Button';
 
 export default function LoginPage() {
   const { user, loading } = useAuth();
@@ -111,9 +110,13 @@ export default function LoginPage() {
               <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">Password</label>
               <input type="password" required minLength={6} value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} placeholder="Password kamu" className={inputClass} />
             </div>
-            <Button type="submit" variant="filled" fullWidth loading={busy}>
+            <button
+              disabled={busy}
+              className="md-btn md-ripple w-full py-3.5 rounded-xl bg-gradient-to-br from-primary to-primary-dark text-white text-[15px] font-semibold disabled:opacity-70"
+            >
+              {busy ? <span className="spinner mr-2" /> : null}
               Masuk
-            </Button>
+            </button>
             {error && <p className="text-red-500 text-xs mt-2.5 text-center">{error}</p>}
           </form>
         ) : (
@@ -130,9 +133,13 @@ export default function LoginPage() {
               <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">Password</label>
               <input type="password" required minLength={6} value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} placeholder="Minimal 6 karakter" className={inputClass} />
             </div>
-            <Button type="submit" variant="filled" fullWidth loading={busy}>
+            <button
+              disabled={busy}
+              className="md-btn md-ripple w-full py-3.5 rounded-xl bg-gradient-to-br from-primary to-primary-dark text-white text-[15px] font-semibold disabled:opacity-70"
+            >
+              {busy ? <span className="spinner mr-2" /> : null}
               Buat Akun
-            </Button>
+            </button>
             {error && <p className="text-red-500 text-xs mt-2.5 text-center">{error}</p>}
             {success && <p className="text-green-600 dark:text-green-400 text-xs mt-2.5 text-center">{success}</p>}
           </form>

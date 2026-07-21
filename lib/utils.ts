@@ -1,11 +1,16 @@
-export const categories: Record<string, { label: string; icon: string; color: string; bg: string }> = {
-  makan: { label: 'Makan & Minum', icon: '🍜', color: '#F59E0B', bg: '#FEF3C7' },
-  transport: { label: 'Transportasi', icon: '🚗', color: '#3B82F6', bg: '#DBEAFE' },
-  jajan: { label: 'Jajan & Snack', icon: '🍪', color: '#EC4899', bg: '#FCE7F3' },
-  hiburan: { label: 'Hiburan', icon: '🎬', color: '#8B5CF6', bg: '#EDE9FE' },
-  tagihan: { label: 'Tagihan', icon: '⚡', color: '#EF4444', bg: '#FEE2E2' },
-  belanja: { label: 'Belanja', icon: '🛍️', color: '#10B981', bg: '#D1FAE5' },
-  lainnya: { label: 'Lainnya', icon: '📦', color: '#6B7280', bg: '#F3F4F6' },
+import { ComponentType } from 'react';
+import { UtensilsIcon, CarIcon, CookieIcon, FilmIcon, BoltIcon, BagIcon, BoxIcon } from '@/components/Icons';
+
+type IconComponent = ComponentType<{ size?: number; className?: string; style?: React.CSSProperties; strokeWidth?: number }>;
+
+export const categories: Record<string, { label: string; Icon: IconComponent; color: string; bg: string }> = {
+  makan: { label: 'Makan & Minum', Icon: UtensilsIcon, color: '#F59E0B', bg: '#FEF3C7' },
+  transport: { label: 'Transportasi', Icon: CarIcon, color: '#3B82F6', bg: '#DBEAFE' },
+  jajan: { label: 'Jajan & Snack', Icon: CookieIcon, color: '#EC4899', bg: '#FCE7F3' },
+  hiburan: { label: 'Hiburan', Icon: FilmIcon, color: '#8B5CF6', bg: '#EDE9FE' },
+  tagihan: { label: 'Tagihan', Icon: BoltIcon, color: '#EF4444', bg: '#FEE2E2' },
+  belanja: { label: 'Belanja', Icon: BagIcon, color: '#10B981', bg: '#D1FAE5' },
+  lainnya: { label: 'Lainnya', Icon: BoxIcon, color: '#6B7280', bg: '#F3F4F6' },
 };
 
 export function formatRupiah(n: number): string {
