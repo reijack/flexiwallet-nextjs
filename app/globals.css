@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 99px;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.page-enter {
+  animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes bfloat {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(25px, -18px) scale(1.06);
+  }
+  66% {
+    transform: translate(-18px, 15px) scale(0.94);
+  }
+}
+.bg-blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.07;
+  z-index: 0;
+  pointer-events: none;
+  animation: bfloat 20s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.balance-card {
+  animation: cardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes scanPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 14px transparent;
+  }
+}
+.scan-viewfinder {
+  animation: scanPulse 2.4s ease-in-out infinite;
+}
+
+.budget-fill {
+  transition: width 1s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.5s;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
