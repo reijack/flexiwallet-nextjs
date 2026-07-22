@@ -2,12 +2,15 @@
 
 import { usePathname } from 'next/navigation';
 import BottomNav from '@/components/BottomNav';
+import Header from '@/components/Header';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
     <>
+      <Header />
+
       <div className="bg-blob bg-primary" style={{ top: -80, right: -80, width: 280, height: 280 }} />
       <div className="bg-blob bg-primary-dark" style={{ bottom: 60, left: -100, width: 220, height: 220 }} />
 

@@ -18,6 +18,7 @@ export type Transaction = {
 export type Profile = {
   id: string;
   full_name: string | null;
+  avatar_url: string | null;
   budget_daily: number;
   budget_monthly: number;
   created_at: string;

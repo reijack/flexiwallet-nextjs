@@ -227,7 +227,7 @@ export default function DashboardPage() {
           ref={fabRipple.ref}
           onMouseDown={fabRipple.onPointerDown}
           onClick={() => setShowAddModal(true)}
-          className="fab-pop-in relative overflow-hidden pointer-events-auto absolute bottom-[90px] right-5 w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-dark text-white flex items-center justify-center shadow-[0_8px_24px_rgba(37,99,235,0.45)] dark:shadow-[0_8px_28px_rgba(59,130,246,0.55)] transition-transform duration-200 active:scale-90 hover:scale-105"
+          className="fab-pop-in overflow-hidden pointer-events-auto absolute bottom-[90px] right-5 w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-dark text-white flex items-center justify-center shadow-[0_8px_24px_rgba(37,99,235,0.45)] dark:shadow-[0_8px_28px_rgba(59,130,246,0.55)] transition-transform duration-200 active:scale-90 hover:scale-105"
         >
           <PlusIcon size={26} />
         </button>

@@ -6,6 +6,7 @@
 create table if not exists public.profiles (
   id uuid references auth.users(id) on delete cascade primary key,
   full_name text,
+  avatar_url text,
   budget_daily numeric default 150000,
   budget_monthly numeric default 3000000,
   created_at timestamptz default now()

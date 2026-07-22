@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
-import { WalletIcon } from '@/components/Icons';
 import Button from '@/components/Button';
 
 export default function LoginPage() {
@@ -72,9 +71,7 @@ export default function LoginPage() {
       <div className="bg-blob bg-primary-dark" style={{ bottom: 60, left: -100, width: 220, height: 220 }} />
 
       <div className="text-center mb-7 relative z-10">
-        <div className="w-16 h-16 rounded-[18px] mx-auto mb-4 flex items-center justify-center bg-gradient-to-br from-primary to-primary-dark text-white">
-          <WalletIcon size={28} />
-        </div>
+        <img src="/logo-icon.png" alt="FlexiWallet" className="w-20 h-20 rounded-2xl mx-auto mb-4 object-cover shadow-[0_8px_24px_rgba(37,99,235,0.35)]" />
         <h1 className="font-display text-2xl font-black text-slate-900 dark:text-white">
           Flexi<span className="text-primary dark:text-blue-400">Wallet</span>
         </h1>
