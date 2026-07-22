@@ -6,9 +6,53 @@ import { useAuth } from '@/lib/auth-context';
 import { supabase, Transaction } from '@/lib/supabase';
 import { categories, formatRupiah } from '@/lib/utils';
 import { exportTransactionsToExcel } from '@/lib/export';
-import BottomNav from '@/components/BottomNav';
 import { useToast } from '@/components/Toast';
 import { ReceiptIcon, DownloadIcon } from '@/components/Icons';
+import { useRipple } from '@/lib/useRipple';
+
+function FilterChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  const { ref, onPointerDown } = useRipple<HTMLButtonElement>();
+  return (
+    <button
+      ref={ref}
+      onMouseDown={onPointerDown}
+      onClick={onClick}
+      className={`relative overflow-hidden px-4 py-1.5 rounded-full border-[1.5px] text-xs font-medium whitespace-nowrap transition-all duration-300 active:scale-95 ${
+        active
+          ? 'bg-primary dark:bg-blue-600 text-white border-primary dark:border-blue-600 scale-105'
+          : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function TxRow({ tx, onDelete }: { tx: Transaction; onDelete: (id: string) => void }) {
+  const { ref, onPointerDown } = useRipple<HTMLDivElement>();
+  const cat = categories[tx.category] || categories.lainnya;
+  const time = new Date(tx.occurred_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+  return (
+    <div
+      ref={ref}
+      onMouseDown={onPointerDown}
+      onClick={() => onDelete(tx.id)}
+      className="relative overflow-hidden flex items-center gap-3 px-4 py-3 border-b border-slate-50 dark:border-slate-700 last:border-none cursor-pointer transition-transform duration-150 active:scale-[0.99]"
+    >
+      <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0" style={{ backgroundColor: cat.bg }}>
+        <cat.Icon size={15} style={{ color: cat.color }} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] font-semibold text-slate-900 dark:text-white">{tx.name}</p>
+        <p className="text-[11px] text-slate-400 dark:text-slate-500">
+          {cat.label} • {time}
+        </p>
+      </div>
+      <p className="text-[13px] font-bold text-red-500 dark:text-red-400">-{formatRupiah(tx.amount)}</p>
+    </div>
+  );
+}
 
 export default function HistoryPage() {
   const { user, profile, loading } = useAuth();
@@ -17,6 +61,7 @@ export default function HistoryPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [filter, setFilter] = useState('all');
   const [exporting, setExporting] = useState(false);
+  const exportRipple = useRipple<HTMLButtonElement>();
 
   useEffect(() => {
     if (!loading && !user) router.replace('/login');
@@ -72,13 +117,15 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="page-enter pb-28 px-4 pt-4">
+    <div className="pb-28 px-4 pt-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">Riwayat</h2>
         <button
+          ref={exportRipple.ref}
+          onMouseDown={exportRipple.onPointerDown}
           onClick={handleExport}
           disabled={exporting || filtered.length === 0}
-          className="md-btn md-ripple flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-green-600 text-white text-xs font-semibold disabled:opacity-40"
+          className="relative overflow-hidden inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-green-600 text-white text-xs font-semibold transition-transform duration-150 active:scale-95 disabled:opacity-40"
         >
           {exporting ? <span className="spinner" /> : <DownloadIcon size={14} />}
           Export Excel
@@ -87,17 +134,7 @@ export default function HistoryPage() {
 
       <div className="flex gap-2 overflow-x-auto pb-3 mb-4">
         {['all', ...Object.keys(categories)].map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={`md-btn px-4 py-1.5 rounded-full border-[1.5px] text-xs font-medium whitespace-nowrap ${
-              filter === f
-                ? 'bg-primary dark:bg-blue-600 text-white border-primary dark:border-blue-600 scale-105'
-                : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
-            }`}
-          >
-            {f === 'all' ? 'Semua' : categories[f].label}
-          </button>
+          <FilterChip key={f} label={f === 'all' ? 'Semua' : categories[f].label} active={filter === f} onClick={() => setFilter(f)} />
         ))}
       </div>
 
@@ -117,35 +154,15 @@ export default function HistoryPage() {
                 <p className="text-xs font-semibold text-red-500 dark:text-red-400">-{formatRupiah(total)}</p>
               </div>
               <div className="md-surface overflow-hidden">
-                {txs.map((tx) => {
-                  const cat = categories[tx.category] || categories.lainnya;
-                  const time = new Date(tx.occurred_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                  return (
-                    <div
-                      key={tx.id}
-                      onClick={() => handleDelete(tx.id)}
-                      className="md-ripple flex items-center gap-3 px-4 py-3 border-b border-slate-50 dark:border-slate-700 last:border-none cursor-pointer"
-                    >
-                      <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0" style={{ backgroundColor: cat.bg }}>
-                        <cat.Icon size={15} style={{ color: cat.color }} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-semibold text-slate-900 dark:text-white">{tx.name}</p>
-                        <p className="text-[11px] text-slate-400 dark:text-slate-500">
-                          {cat.label} • {time}
-                        </p>
-                      </div>
-                      <p className="text-[13px] font-bold text-red-500 dark:text-red-400">-{formatRupiah(tx.amount)}</p>
-                    </div>
-                  );
-                })}
+                {txs.map((tx) => (
+                  <TxRow key={tx.id} tx={tx} onDelete={handleDelete} />
+                ))}
               </div>
             </div>
           );
         })
       )}
 
-      <BottomNav />
     </div>
   );
 }

@@ -98,6 +98,15 @@ body {
   transition: width 1s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.5s;
 }
 
+@keyframes pageFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .spinner {
   width: 16px;
   height: 16px;

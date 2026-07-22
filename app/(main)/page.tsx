@@ -7,7 +7,6 @@ import { Doughnut } from 'react-chartjs-2';
 import { useAuth } from '@/lib/auth-context';
 import { supabase, Transaction } from '@/lib/supabase';
 import { categories, formatRupiah } from '@/lib/utils';
-import BottomNav from '@/components/BottomNav';
 import { useToast } from '@/components/Toast';
 import { WalletIcon, PiggyBankIcon, ChartPieIcon, PlusIcon, XIcon } from '@/components/Icons';
 import Button from '@/components/Button';
@@ -111,9 +110,7 @@ export default function DashboardPage() {
     'w-full px-3.5 py-3 border-[1.5px] border-slate-200 dark:border-slate-700 rounded-xl text-sm outline-none bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:border-primary dark:focus:border-blue-400 transition-colors duration-300';
 
   return (
-    <div className="page-enter pb-28 px-4 pt-4 relative z-10">
-      <div className="bg-blob bg-primary" style={{ top: -80, right: -80, width: 280, height: 280 }} />
-      <div className="bg-blob bg-primary-dark" style={{ bottom: 60, left: -100, width: 220, height: 220 }} />
+    <div className="pb-28 px-4 pt-4">
 
       <div className="mb-4 md-stagger">
         <div>
@@ -276,7 +273,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <BottomNav />
     </div>
   );
 }

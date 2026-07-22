@@ -40,7 +40,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white/92 dark:bg-slate-900/92 backdrop-blur-lg border-t border-slate-100 dark:border-slate-800 flex justify-around py-2 pb-[env(safe-area-inset-bottom,10px)] z-50 transition-colors duration-300">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl rounded-t-2xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.4)] flex justify-around py-2 pb-[env(safe-area-inset-bottom,10px)] z-50 transition-colors duration-300">
       {navItems.map((item) => (
         <NavLink key={item.href} {...item} active={pathname === item.href} />
       ))}

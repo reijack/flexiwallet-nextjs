@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { useTheme } from '@/lib/theme-context';
 import { supabase } from '@/lib/supabase';
-import BottomNav from '@/components/BottomNav';
 import { useToast } from '@/components/Toast';
 import Button from '@/components/Button';
 import Switch from '@/components/Switch';
@@ -59,7 +58,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="page-enter pb-28 px-4 pt-4">
+    <div className="pb-28 px-4 pt-4">
       <div className="text-center mb-6">
         <div className="w-20 h-20 rounded-full mx-auto mb-3 flex items-center justify-center text-3xl font-extrabold text-white bg-gradient-to-br from-primary to-primary-dark">
           {name.charAt(0).toUpperCase()}
@@ -97,7 +96,6 @@ export default function ProfilePage() {
 
       <p className="text-center text-[11px] text-slate-400 dark:text-slate-500 mt-4">FlexiWallet v2.1 — Next.js</p>
 
-      <BottomNav />
     </div>
   );
 }

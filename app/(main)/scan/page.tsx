@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { supabase } from '@/lib/supabase';
 import { categories, formatRupiah, guessCategory } from '@/lib/utils';
-import BottomNav from '@/components/BottomNav';
 import { useToast } from '@/components/Toast';
 import { CameraIcon, UploadIcon, CheckCircleIcon, XIcon } from '@/components/Icons';
 import Button from '@/components/Button';
@@ -127,7 +126,7 @@ export default function ScanPage() {
   }
 
   return (
-    <div className="page-enter pb-28 px-4 pt-4">
+    <div className="pb-28 px-4 pt-4">
       <h2 className="text-xl font-extrabold text-slate-900 dark:text-white mb-1">Flex-Scan</h2>
       <p className="text-[13px] text-slate-500 dark:text-slate-400 mb-6">Foto struk kamu, sistem akan baca teksnya otomatis (OCR)</p>
 
@@ -238,7 +237,6 @@ export default function ScanPage() {
         </div>
       )}
 
-      <BottomNav />
     </div>
   );
 }
