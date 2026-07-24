@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import Button from '@/components/Button';
+import Portal from '@/components/Portal';
 
 export default function LoginPage() {
   const { user, loading } = useAuth();
@@ -19,6 +20,12 @@ export default function LoginPage() {
   const [signupName, setSignupName] = useState('');
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
+
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotBusy, setForgotBusy] = useState(false);
+  const [forgotError, setForgotError] = useState('');
+  const [forgotSuccess, setForgotSuccess] = useState('');
 
   useEffect(() => {
     if (!loading && user) router.replace('/');
@@ -60,6 +67,29 @@ export default function LoginPage() {
     } else {
       setSuccess('Akun dibuat! Cek email kamu untuk verifikasi, lalu login.');
     }
+  }
+
+  function openForgotModal() {
+    setForgotEmail(loginEmail);
+    setForgotError('');
+    setForgotSuccess('');
+    setShowForgotModal(true);
+  }
+
+  async function handleForgotPassword(e: React.FormEvent) {
+    e.preventDefault();
+    setForgotError('');
+    setForgotSuccess('');
+    setForgotBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+      redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/reset-password` : undefined,
+    });
+    setForgotBusy(false);
+    if (error) {
+      setForgotError(error.message);
+      return;
+    }
+    setForgotSuccess('Link reset password sudah dikirim! Cek email kamu (termasuk folder spam).');
   }
 
   const inputClass =
@@ -104,9 +134,14 @@ export default function LoginPage() {
               <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">Email</label>
               <input type="email" required value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} placeholder="kamu@email.com" className={inputClass} />
             </div>
-            <div className="mb-4">
+            <div className="mb-2">
               <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">Password</label>
               <input type="password" required minLength={6} value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} placeholder="Password kamu" className={inputClass} />
+            </div>
+            <div className="text-right mb-4">
+              <button type="button" onClick={openForgotModal} className="text-xs font-semibold text-primary dark:text-blue-400">
+                Lupa password?
+              </button>
             </div>
             <Button type="submit" variant="filled" fullWidth loading={busy}>
               Masuk
@@ -135,6 +170,44 @@ export default function LoginPage() {
           </form>
         )}
       </div>
+
+      {showForgotModal && (
+        <Portal>
+          <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center px-6"
+            onClick={(e) => e.target === e.currentTarget && setShowForgotModal(false)}
+          >
+            <div className="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-[380px] p-6" style={{ animation: 'cardIn .4s cubic-bezier(.22,1,.36,1)' }}>
+              <div className="flex items-center justify-between mb-1.5">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Lupa Password</h3>
+                <button onClick={() => setShowForgotModal(false)} className="text-slate-400 dark:text-slate-500 text-xl leading-none">
+                  ✕
+                </button>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Masukkan email akun kamu, kami kirim link buat bikin password baru.</p>
+
+              <form onSubmit={handleForgotPassword}>
+                <div className="mb-4">
+                  <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">Email</label>
+                  <input
+                    type="email"
+                    required
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    placeholder="kamu@email.com"
+                    className={inputClass}
+                  />
+                </div>
+                <Button type="submit" variant="filled" fullWidth loading={forgotBusy}>
+                  Kirim Link Reset
+                </Button>
+                {forgotError && <p className="text-red-500 text-xs mt-2.5 text-center">{forgotError}</p>}
+                {forgotSuccess && <p className="text-green-600 dark:text-green-400 text-xs mt-2.5 text-center">{forgotSuccess}</p>}
+              </form>
+            </div>
+          </div>
+        </Portal>
+      )}
     </div>
   );
 }
