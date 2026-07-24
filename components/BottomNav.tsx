@@ -20,18 +20,24 @@ function NavLink({ href, label, Icon, active }: { href: string; label: string; I
       ref={ref}
       href={href}
       onMouseDown={onPointerDown}
-      className={`relative overflow-hidden flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl text-[10.5px] font-medium transition-transform duration-150 active:scale-90 ${
+      className={`relative overflow-hidden flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl text-[10.5px] font-medium transition-transform duration-150 active:scale-90 ${
         active ? 'text-primary dark:text-blue-400 font-semibold' : 'text-slate-400 dark:text-slate-500'
       }`}
     >
-      <span
-        className={`relative w-6 h-6 flex items-center justify-center transition-transform duration-300 ${active ? '-translate-y-0.5' : ''}`}
-        style={{ transitionTimingFunction: 'cubic-bezier(.34,1.56,.64,1)' }}
-      >
-        {active && <span className="absolute -inset-1.5 rounded-xl bg-primary-light dark:bg-blue-500/20 -z-10 transition-colors duration-300" />}
-        <Icon size={20} strokeWidth={active ? 2.3 : 2} />
+      <span className="relative flex items-center justify-center w-11 h-7">
+        {/* Pill indicator: selalu ada di DOM (nggak conditional-mount) supaya transisi
+            muncul/hilangnya halus dua arah, bukan cuma pas muncul doang */}
+        <span
+          className={`absolute inset-0 rounded-full bg-primary-light dark:bg-blue-500/25 transition-all duration-300 ${
+            active ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+          }`}
+          style={{ transitionTimingFunction: 'cubic-bezier(.34,1.56,.64,1)' }}
+        />
+        <Icon size={20} strokeWidth={active ? 2.3 : 2} className="relative transition-transform duration-300" style={{ transitionTimingFunction: 'cubic-bezier(.34,1.56,.64,1)' }} />
       </span>
-      <span>{label}</span>
+      <span className="transition-transform duration-300" style={{ transform: active ? 'translateY(-1px)' : 'none' }}>
+        {label}
+      </span>
     </Link>
   );
 }
