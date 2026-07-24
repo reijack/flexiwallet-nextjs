@@ -128,6 +128,7 @@ export default function ProfilePage() {
         <p className="text-[13px] text-slate-500 dark:text-slate-400">{user.email}</p>
       </div>
 
+      <div className="md-stagger">
       <div className="md-surface p-4 mb-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-9 h-9 rounded-xl bg-primary-light dark:bg-blue-500/20 flex items-center justify-center text-primary dark:text-blue-400 shrink-0">
@@ -149,6 +150,7 @@ export default function ProfilePage() {
         <Button variant="filled" fullWidth loading={saving} onClick={saveBudget}>
           Simpan Budget
         </Button>
+      </div>
       </div>
 
       <Button variant="danger-outlined" fullWidth icon={<LogoutIcon size={16} />} onClick={handleLogout}>

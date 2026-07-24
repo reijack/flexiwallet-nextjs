@@ -78,7 +78,7 @@ export default function LoginPage() {
         <p className="text-[13px] text-slate-500 dark:text-slate-400 mt-1">Catat pengeluaran kamu, di mana saja</p>
       </div>
 
-      <div className="md-surface md-elevated p-6 relative z-10">
+      <div className="md-surface md-elevated p-6 relative z-10 balance-card">
         <div className="flex mb-5 border-b border-slate-100 dark:border-slate-700">
           <button
             onClick={() => setTab('login')}
@@ -99,7 +99,7 @@ export default function LoginPage() {
         </div>
 
         {tab === 'login' ? (
-          <form onSubmit={handleLogin}>
+          <form key="login-form" onSubmit={handleLogin} className="soft-fade-in">
             <div className="mb-3.5">
               <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">Email</label>
               <input type="email" required value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} placeholder="kamu@email.com" className={inputClass} />
@@ -114,7 +114,7 @@ export default function LoginPage() {
             {error && <p className="text-red-500 text-xs mt-2.5 text-center">{error}</p>}
           </form>
         ) : (
-          <form onSubmit={handleSignup}>
+          <form key="signup-form" onSubmit={handleSignup} className="soft-fade-in">
             <div className="mb-3.5">
               <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">Nama Lengkap</label>
               <input type="text" required value={signupName} onChange={(e) => setSignupName(e.target.value)} placeholder="Nama kamu" className={inputClass} />

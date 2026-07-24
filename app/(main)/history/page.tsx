@@ -38,9 +38,9 @@ function TxRow({ tx, onDelete }: { tx: Transaction; onDelete: (id: string) => vo
       ref={ref}
       onMouseDown={onPointerDown}
       onClick={() => onDelete(tx.id)}
-      className="relative overflow-hidden flex items-center gap-3 px-4 py-3 border-b border-slate-50 dark:border-slate-700 last:border-none cursor-pointer transition-transform duration-150 active:scale-[0.99]"
+      className="tx-row relative overflow-hidden flex items-center gap-3 px-4 py-3 border-b border-slate-50 dark:border-slate-700 last:border-none cursor-pointer transition-transform duration-150 active:scale-[0.99]"
     >
-      <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0" style={{ backgroundColor: cat.bg }}>
+      <div className="cat-icon-wrap w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0" style={{ backgroundColor: cat.bg }}>
         <cat.Icon size={15} style={{ color: cat.color }} />
       </div>
       <div className="flex-1 min-w-0">

@@ -10,6 +10,7 @@ import { categories, formatRupiah } from '@/lib/utils';
 import { useToast } from '@/components/Toast';
 import { WalletIcon, PiggyBankIcon, ChartPieIcon, PlusIcon, XIcon } from '@/components/Icons';
 import Button from '@/components/Button';
+import Portal from '@/components/Portal';
 import { useRipple } from '@/lib/useRipple';
 import Link from 'next/link';
 
@@ -112,11 +113,9 @@ export default function DashboardPage() {
   return (
     <div className="pb-28 px-4 pt-4">
 
-      <div className="mb-4 md-stagger">
-        <div>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Selamat datang,</p>
-          <h1 className="text-[22px] font-extrabold text-slate-900 dark:text-white">Hai, {name}!</h1>
-        </div>
+      <div className="mb-4" style={{ animation: 'softFadeIn .4s cubic-bezier(.22,1,.36,1)' }}>
+        <p className="text-sm text-slate-500 dark:text-slate-400">Selamat datang,</p>
+        <h1 className="text-[22px] font-extrabold text-slate-900 dark:text-white">Hai, {name}!</h1>
       </div>
 
       <div className="balance-card rounded-[20px] p-6 text-white relative overflow-hidden mb-5 bg-gradient-to-br from-primary to-primary-dark">
@@ -132,6 +131,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      <div className="md-stagger">
       <div className="md-surface p-4 mb-4">
         <h3 className="text-[15px] font-bold text-slate-900 dark:text-white mb-3.5 flex items-center gap-2">
           <PiggyBankIcon size={17} className="text-primary dark:text-blue-400" /> Budget
@@ -205,8 +205,8 @@ export default function DashboardPage() {
             const cat = categories[tx.category] || categories.lainnya;
             const time = new Date(tx.occurred_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             return (
-              <div key={tx.id} className="flex items-center gap-3 py-3.5 border-b border-slate-100 dark:border-slate-700 last:border-none">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: cat.bg }}>
+              <div key={tx.id} className="tx-row flex items-center gap-3 py-3.5 border-b border-slate-100 dark:border-slate-700 last:border-none">
+                <div className="cat-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: cat.bg }}>
                   <cat.Icon size={17} style={{ color: cat.color }} />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -221,6 +221,7 @@ export default function DashboardPage() {
           })
         )}
       </div>
+      </div>
 
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] pointer-events-none z-40">
         <button
@@ -234,6 +235,7 @@ export default function DashboardPage() {
       </div>
 
       {showAddModal && (
+        <Portal>
         <div
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-end justify-center"
           onClick={(e) => e.target === e.currentTarget && setShowAddModal(false)}
@@ -271,6 +273,7 @@ export default function DashboardPage() {
             </form>
           </div>
         </div>
+        </Portal>
       )}
 
     </div>
