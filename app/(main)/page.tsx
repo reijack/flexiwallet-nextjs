@@ -2,26 +2,30 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js';
-import { Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, LineElement, PointElement, CategoryScale, LinearScale, Filler } from 'chart.js';
+import { Doughnut, Line } from 'react-chartjs-2';
 import { useAuth } from '@/lib/auth-context';
+import { useTheme } from '@/lib/theme-context';
 import { supabase, Transaction } from '@/lib/supabase';
 import { categories, formatRupiah } from '@/lib/utils';
 import { useToast } from '@/components/Toast';
-import { WalletIcon, PiggyBankIcon, ChartPieIcon, PlusIcon, XIcon } from '@/components/Icons';
+import { WalletIcon, PiggyBankIcon, ChartPieIcon, TrendingUpIcon, PlusIcon, XIcon } from '@/components/Icons';
 import Button from '@/components/Button';
 import Portal from '@/components/Portal';
 import { useRipple } from '@/lib/useRipple';
 import Link from 'next/link';
 
-ChartJS.register(ArcElement, Tooltip);
+ChartJS.register(ArcElement, Tooltip, LineElement, PointElement, CategoryScale, LinearScale, Filler);
 
 export default function DashboardPage() {
   const { user, profile, loading } = useAuth();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const router = useRouter();
   const { showToast } = useToast();
   const fabRipple = useRipple<HTMLButtonElement>();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [monthlyTrend, setMonthlyTrend] = useState<{ label: string; total: number }[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [txName, setTxName] = useState('');
   const [txAmount, setTxAmount] = useState('');
@@ -38,9 +42,45 @@ export default function DashboardPage() {
     setTransactions((data as Transaction[]) || []);
   }, [user]);
 
+  const loadMonthlyTrend = useCallback(async () => {
+    if (!user) return;
+    // Ambil transaksi 6 bulan terakhir (query terpisah dari daftar transaksi biasa,
+    // karena limit 200 di atas bisa saja tidak mencakup rentang 6 bulan penuh)
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+    sixMonthsAgo.setDate(1);
+    sixMonthsAgo.setHours(0, 0, 0, 0);
+
+    const { data } = await supabase
+      .from('transactions')
+      .select('amount, occurred_at')
+      .gte('occurred_at', sixMonthsAgo.toISOString());
+
+    // Siapkan 6 slot bulan berurutan (termasuk bulan yang belum ada transaksinya, tetap tampil 0)
+    const slots: { key: string; label: string; total: number }[] = [];
+    const cursor = new Date(sixMonthsAgo);
+    for (let i = 0; i < 6; i++) {
+      const key = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}`;
+      const label = cursor.toLocaleDateString('id-ID', { month: 'short' });
+      slots.push({ key, label, total: 0 });
+      cursor.setMonth(cursor.getMonth() + 1);
+    }
+
+    (data || []).forEach((tx: { amount: number; occurred_at: string }) => {
+      const key = tx.occurred_at.slice(0, 7);
+      const slot = slots.find((s) => s.key === key);
+      if (slot) slot.total += Number(tx.amount);
+    });
+
+    setMonthlyTrend(slots.map((s) => ({ label: s.label, total: s.total })));
+  }, [user]);
+
   useEffect(() => {
-    if (user) loadTransactions();
-  }, [user, loadTransactions]);
+    if (user) {
+      loadTransactions();
+      loadMonthlyTrend();
+    }
+  }, [user, loadTransactions, loadMonthlyTrend]);
 
   if (loading || !user) {
     return (
@@ -99,6 +139,7 @@ export default function DashboardPage() {
       return;
     }
     setTransactions((t) => [data as Transaction, ...t]);
+    loadMonthlyTrend();
     setShowAddModal(false);
     setTxName('');
     setTxAmount('');
@@ -187,6 +228,71 @@ export default function DashboardPage() {
                 );
               })}
             </div>
+          </div>
+        )}
+      </div>
+
+      <div className="md-surface p-4 mb-4">
+        <h3 className="text-[15px] font-bold text-slate-900 dark:text-white mb-3.5 flex items-center gap-2">
+          <TrendingUpIcon size={17} className="text-primary dark:text-blue-400" /> Tren Pengeluaran Bulanan
+        </h3>
+        {monthlyTrend.every((m) => m.total === 0) ? (
+          <p className="text-xs text-slate-400 dark:text-slate-500">Belum ada data 6 bulan terakhir</p>
+        ) : (
+          <div className="h-[180px]">
+            <Line
+              data={{
+                labels: monthlyTrend.map((m) => m.label),
+                datasets: [
+                  {
+                    data: monthlyTrend.map((m) => m.total),
+                    borderColor: isDark ? '#60a5fa' : '#2563EB',
+                    backgroundColor: isDark ? 'rgba(96,165,250,0.15)' : 'rgba(37,99,235,0.1)',
+                    borderWidth: 2.5,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 3.5,
+                    pointBackgroundColor: isDark ? '#60a5fa' : '#2563EB',
+                    pointBorderColor: isDark ? '#0f172a' : '#fff',
+                    pointBorderWidth: 2,
+                  },
+                ],
+              }}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: { display: false },
+                  tooltip: {
+                    callbacks: { label: (ctx) => ' ' + formatRupiah(ctx.parsed.y) },
+                    bodyFont: { family: 'Poppins' },
+                    titleFont: { family: 'Poppins', weight: 600 },
+                    padding: 10,
+                    cornerRadius: 10,
+                  },
+                },
+                scales: {
+                  x: {
+                    grid: { display: false },
+                    ticks: { color: isDark ? '#94a3b8' : '#64748b', font: { size: 11, family: 'Poppins' } },
+                  },
+                  y: {
+                    grid: { color: isDark ? 'rgba(148,163,184,0.1)' : 'rgba(100,116,139,0.08)' },
+                    ticks: {
+                      color: isDark ? '#94a3b8' : '#64748b',
+                      font: { size: 10, family: 'Poppins' },
+                      callback: (value) => {
+                        const n = Number(value);
+                        if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1) + 'jt';
+                        if (n >= 1000) return (n / 1000).toFixed(0) + 'rb';
+                        return n;
+                      },
+                    },
+                  },
+                },
+                animation: { duration: 900, easing: 'easeOutQuart' },
+              }}
+            />
           </div>
         )}
       </div>
